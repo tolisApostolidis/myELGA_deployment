@@ -1,0 +1,79 @@
+services:
+  mysql:
+    build:
+      context: https://github.com/tolisApostolidis/myELGA_database.git#main
+      dockerfile: Dockerfile
+    container_name: myelga-mysql
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - myelga-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  backend:
+    build: 
+      context: https://github.com/tolisApostolidis/myELGA_backend.git#main
+      dockerfile: Dockerfile 
+    container_name: myelga-backend
+    image: myelga-backend:1.0
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DB}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+
+      JWT_SECRET: ${JWT_SECRET}
+
+      CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN}
+    networks:
+      - myelga-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  frontend: 
+    build: 
+      context: https://github.com/tolisApostolidis/myELGA_frontend.git#main
+      dockerfile: Dockerfile
+    container_name: myelga-frontend
+    image: myelga-frontend:1.0
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - 9000:80
+    networks:
+      - myelga-network
+
+volumes:
+  mysql_data:
+
+networks:
+  myelga-network:
+    driver: bridge
