@@ -13,3 +13,5 @@ jwt_secret: "GENERATE_A_LONG_RANDOM_SECRET"
 backend_private_host: "BACKEND_INTERNAL_IP"
 
 app_user: "USER_OF_BACKEND_VM"
+
+deploy_vm_ip: "DEPLOY_VM_EXTERNAL_IP"

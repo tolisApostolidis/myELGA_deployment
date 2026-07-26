@@ -1,0 +1,82 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: true
+
+- name: Remove conflicting packages
+  apt: 
+    name:
+      - docker.io
+      - docker-compose
+      - docker-compose-v2
+      - docker-doc
+      - podman-docker
+      - containerd
+      - runc
+    state: absent
+
+- name: Install basic packages
+  apt:
+    name:
+      - ca-certificates
+      - curl
+    state: present
+
+- name: Create Docker keyring directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+
+- name: Download Docker GPG key
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+
+- name: Add Docker repository
+  apt_repository:
+    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu focal stable
+    filename: docker
+    state: present
+
+- name: Install Docker Engine and Docker Compose
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+
+- name: Start docker service
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add deployment user to Docker group
+  user:
+    name: "{{  ansible_user }}"
+    groups: docker
+    append: true
+
+- name: Reset SSH connection
+  meta: reset_connection
+
+- name: Verify Docker version
+  command:
+    cmd: docker --version
+  register: docker_version
+  changed_when: false
+
+- name: Verify Docker Compose version
+  command:
+    cmd: docker compose version
+  register: compose_version
+  changed_when: false
+
+- name: Display Docker versions
+  debug:
+    msg:
+      - "{{ docker_version.stdout }}"
+      - "{{ compose_version.stdout }}"

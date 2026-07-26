@@ -1,0 +1,5 @@
+---
+- name: Restart Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ repo_dest }}"
+    state: restarted

@@ -1,0 +1,6 @@
+---
+- name: Include docker setup tasks
+  import_tasks: setup.yaml
+
+- name: Include docker deployment tasks
+  import_tasks: deploy.yaml

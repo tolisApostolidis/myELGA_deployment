@@ -1,0 +1,7 @@
+---
+- name: Deploy the application using Docker
+  hosts: deployment-vm
+  become: true
+
+  roles: 
+    - docker
