@@ -1,0 +1,32 @@
+---
+- name: Check whether database data was already imported
+  stat:
+    path: /var/lib/myelga-data-imported
+  register: data_import_marker
+
+- name: Copy local database dump to database VM
+  copy:
+    src: myElga_dump.sql
+    dest: /tmp/myElga_data.sql
+  when: not data_import_marker.stat.exists
+
+- name: Import example data to database
+  mysql_db: 
+    name: "{{ db_name }}"
+    state: import
+    target: /tmp/myElga_data.sql
+    login_user: "{{ db_username }}"
+    login_password: "{{ db_password }}"
+    login_host: localhost
+  when: not data_import_marker.stat.exists
+
+- name: Create data import marker
+  file:
+    path: /var/lib/myelga-data-imported
+    state: touch
+  when: not data_import_marker.stat.exists
+
+- name: Remove database dump from VM
+  file:
+    path: /tmp/myElga_data.sql 
+    state: absent

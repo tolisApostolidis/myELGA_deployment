@@ -1,0 +1,7 @@
+---
+- name: Configure and deploy myElga backend
+  hosts: backend-vm 
+  become: true
+
+  roles:
+    - backend

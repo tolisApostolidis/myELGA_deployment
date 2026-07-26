@@ -1,0 +1,15 @@
+---
+db_host: "DATABASE_VM_INTERNAL_IP"
+db_name: "elga_app_schema"
+db_username: "myelgauser"
+db_password: "CHANGE_ME"
+db_root_password: "CHANGE_ME"
+
+mail_username: "myElga.notofications@gmail.com"
+mail_password: "GMAIL_APP_PASSWORD"
+
+jwt_secret: "GENERATE_A_LONG_RANDOM_SECRET"
+
+backend_private_host: "BACKEND_INTERNAL_IP"
+
+app_user: "USER_OF_BACKEND_VM"

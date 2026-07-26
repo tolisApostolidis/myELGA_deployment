@@ -1,0 +1,46 @@
+- name: Update apt cache
+  apt: 
+    update_cache: true
+
+- name: Install Git
+  apt:
+    name: git 
+    state: present
+
+- name: Install Maven
+  apt: 
+    name: maven 
+    state: present
+
+- name: Install Java
+  apt:
+    name: openjdk-21-jdk
+    state: present
+
+- name: Set Java 21 as default runtime
+  alternatives:
+    name: java
+    path: /usr/lib/jvm/java-21-openjdk-amd64/bin/java
+
+- name: Set Java 21 as default compiler
+  alternatives:
+    name: javac
+    path: /usr/lib/jvm/java-21-openjdk-amd64/bin/javac
+
+- name: Verify Java installation
+  command: java -version
+  register: java_version
+  changed_when: false
+
+- name: Display Java version 
+  debug: 
+    var: java_version.stderr_lines
+
+- name: Verify Maven installation
+  command: mvn -version
+  register: maven_version
+  changed_when: false
+
+- name: Display Maven version
+  debug:
+    var: maven_version.stdout_lines

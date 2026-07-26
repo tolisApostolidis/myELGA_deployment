@@ -1,0 +1,52 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: true
+
+- name: Install Git
+  apt:
+    name: git 
+    state: present
+
+- name: Install Nodejs
+  apt:
+    name: nodejs 
+    state: present
+
+- name: Install npm
+  apt:
+    name: npm 
+    state: present
+
+- name: Install nginx
+  apt:
+    name: nginx 
+    state: present
+
+- name: Verify Git installation
+  command: git --version
+  register: git_version
+  changed_when: false
+
+- name: Verify Nodejs installation
+  command: node --version
+  register: node_version
+  changed_when: false
+
+- name: Verify npm installation
+  command: npm --version
+  register: npm_version
+  changed_when: false
+
+- name: Verify Nginx installation
+  command: nginx -v
+  register: nginx_version
+  changed_when: false
+
+- name: Display installed version 
+  debug: 
+    msg:
+      - "Git: {{ git_version.stdout }}"
+      - "Node.js: {{ node_version.stdout }}"
+      - "npm: {{ npm_version.stdout }}"
+      - "Nginx: {{ nginx_version.stderr }}"

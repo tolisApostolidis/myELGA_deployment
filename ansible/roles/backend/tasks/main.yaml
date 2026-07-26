@@ -1,0 +1,6 @@
+---
+- name: Include backend setup tasks
+  import_tasks: setup.yaml
+
+- name: Include backend deployment tasks
+  import_tasks: deploy.yaml

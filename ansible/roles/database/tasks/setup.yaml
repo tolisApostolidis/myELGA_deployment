@@ -1,0 +1,39 @@
+- name: Update apt cache
+  apt: 
+    update_cache: true
+
+- name: Install MySQL Server
+  apt:
+    name: mysql-server
+    state: present
+
+- name: Verify MySQL installation
+  command: mysql --version
+  register: mysql_version
+  changed_when: false
+
+- name: Display MySQL version
+  debug:
+    var: mysql_version.stdout_lines
+
+- name: Start MySQL
+  service: 
+    name: mysql
+    state: started
+    enabled: true
+
+- name: Install PyMySQL
+  apt: 
+    name: python3-pymysql
+    state: present
+
+- name: Allow remote access to MySQL
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = 0.0.0.0'
+
+- name: Restart MySQL 
+  service: 
+    name: mysql 
+    state: restarted

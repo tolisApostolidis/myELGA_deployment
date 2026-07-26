@@ -1,0 +1,3 @@
+repo_url: "https://github.com/tolisApostolidis/myELGA_backend"
+repo_dest: "/opt/myElga/backend"
+repo_version: "main"

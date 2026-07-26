@@ -1,0 +1,9 @@
+---
+- name: Include frontend setup task
+  import_tasks: setup.yaml
+
+- name: Include frontend deployment task
+  import_tasks: deploy.yaml
+
+- name: Include frontend configuration task
+  import_tasks: configure.yaml

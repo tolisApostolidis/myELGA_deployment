@@ -1,0 +1,7 @@
+---
+- name: Configure and deploy myElga frontend
+  hosts: frontend-vm
+  become: true
+
+  roles: 
+    - frontend

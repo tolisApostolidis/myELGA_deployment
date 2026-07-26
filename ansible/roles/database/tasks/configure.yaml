@@ -1,0 +1,17 @@
+---
+- name: Create application database schema 
+  mysql_db:
+    name: "{{ db_name }}"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Create user and with application database access
+  mysql_user:
+    plugin: caching_sha2_password
+    plugin_auth_string: "{{ db_password }}"
+    name: "{{ db_username }}"
+    host: "%"
+    priv: "{{ db_name }}.*:ALL"
+    state: present
+    salt: 1234567890abcdefghij
+    login_unix_socket: /run/mysqld/mysqld.sock

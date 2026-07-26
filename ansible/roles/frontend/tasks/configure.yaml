@@ -1,0 +1,29 @@
+---
+- name: Copy myELGA Nginx configuration
+  template:
+    src: myelga.conf.j2
+    dest: /etc/nginx/sites-available/myelga
+  notify: Restart nginx
+
+- name: Enable myELGA nginx site
+  file:
+    src: /etc/nginx/sites-available/myelga
+    dest: /etc/nginx/sites-enabled/myelga
+    state: link
+  notify: Restart nginx
+
+- name: Disable default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Restart nginx
+
+- name: Test nginx configuration
+  command: nginx -t
+  register: nginx_test
+  changed_when: false
+
+- name: Display nginx configuration test
+  debug:
+    var: nginx_test.stderr_lines
+

@@ -1,0 +1,39 @@
+- name: Clone git repository
+  git: 
+    repo: "{{ repo_url }}"
+    dest: "{{ repo_dest }}"
+    version: "{{ repo_version }}"
+    update: true
+
+- name: Create application.properties
+  template:
+    src: application.properties.j2
+    dest: "{{ repo_dest }}/src/main/resources/application.properties"
+    mode: "0600"
+
+- name: Build backend
+  command:
+    cmd: mvn clean package -DskipTests
+    chdir: "{{ repo_dest }}"
+
+- name: Copy JAR with fixed filename
+  copy:
+    remote_src: yes
+    src: "{{ repo_dest }}/target/myElga-0.0.1-SNAPSHOT.jar"
+    dest: "{{ repo_dest }}/target/myElga.jar"
+  notify: Restart backend
+
+- name: Copy systemd service
+  template:
+    src: myElga.service.j2
+    dest: /etc/systemd/system/myelga.service
+  notify:
+    - Reload systemd
+    - Restart backend
+
+- name: Ensure spring service started 
+  systemd:
+    name: myelga
+    enabled: true
+    state: started
+    daemon_reload: true

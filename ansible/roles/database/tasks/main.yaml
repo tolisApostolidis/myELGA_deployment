@@ -1,0 +1,9 @@
+---
+- name: Include database setup task
+  import_tasks: setup.yaml
+
+- name: Include database configuration task
+  import_tasks: configure.yaml
+
+- name: Include database import data task
+  import_tasks: import_data.yaml

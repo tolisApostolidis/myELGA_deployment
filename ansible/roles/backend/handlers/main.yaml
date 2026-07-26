@@ -1,0 +1,10 @@
+---
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+
+- name: Restart backend
+  systemd:
+    name: myelga
+    state: restarted
+    daemon_reload: true

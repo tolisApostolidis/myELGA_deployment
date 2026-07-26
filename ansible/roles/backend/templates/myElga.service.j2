@@ -1,0 +1,14 @@
+[Unit]
+Description=myELGA Backend
+After=network.target
+
+[Service]
+User={{ app_user }}
+WorkingDirectory={{ repo_dest }}
+ExecStart=/usr/bin/java -jar {{ repo_dest }}/target/myElga.jar
+SuccessExitStatus=143
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

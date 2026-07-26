@@ -1,0 +1,7 @@
+---
+- name: Configure myElga Database
+  hosts: database-vm
+  become: true
+
+  roles: 
+    - database
