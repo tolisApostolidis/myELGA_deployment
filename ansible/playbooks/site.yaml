@@ -1,0 +1,4 @@
+---
+- import_playbook: database.yaml
+- import_playbook: backend.yaml
+- import_playbook: frontend.yaml

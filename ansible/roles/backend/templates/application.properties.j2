@@ -16,3 +16,5 @@ spring.mail.properties.mail.smtp.starttls.enable = true
 
 app.jwtSecret = {{ jwt_secret }}
 app.jwtExpirationMs = 1000000000
+
+app.cors.allowed-origin=http://{{ frontend_ip }}

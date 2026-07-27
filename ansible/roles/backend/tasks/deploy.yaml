@@ -3,6 +3,7 @@
     repo: "{{ repo_url }}"
     dest: "{{ repo_dest }}"
     version: "{{ repo_version }}"
+    force: true
     update: true
 
 - name: Create application.properties
