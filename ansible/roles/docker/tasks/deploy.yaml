@@ -17,10 +17,14 @@
     project_src: "{{ repo_dest }}"
     state: absent
 
+- name: Pull Docker images from registry
+  community.docker.docker_compose_v2:
+    project_src: "{{ repo_dest }}"
+    pull: always
+
 - name: Build and start Docker Compose services
   community.docker.docker_compose_v2:
     project_src: "{{ repo_dest }}"
-    build: always
     state: present
     remove_orphans: true
   register: compose_result
