@@ -1,0 +1,15 @@
+---
+- name: Install Ansible
+  apt:
+    name: ansible
+    state: present
+
+- name: Verify Ansible installation
+  command: 
+    cmd: ansible --version
+  register: ansible_version
+  changed_when: false
+
+- name: Display Ansible version
+  debug:
+    var: ansible_version.stdout_lines

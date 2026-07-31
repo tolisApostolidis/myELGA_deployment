@@ -5,5 +5,8 @@
 - name: Iclude docker setup tasks
   import_tasks: docker.yaml
 
+- name: Include ansible setup tasks
+  import_tasks: ansible.yaml
+
 - name: Iclude jenkins setup tasks
   import_tasks: jenkins.yaml
