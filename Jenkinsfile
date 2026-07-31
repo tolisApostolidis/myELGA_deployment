@@ -21,6 +21,24 @@ pipeline {
     }
 
     stages {
+
+        stage('Prepare Ansible Files') {
+            steps {
+                withCredentials([
+                    file(credentialsId: 'ansible-hosts', variable: 'HOSTS_FILE'),
+                    file(credentialsId: 'ansible-vars', variable: 'VARS_FILE'),
+                    file(credentialsId: 'ansible-private-key', variable: 'SSH_KEY_FILE')
+                ]) {
+                    sh '''
+                        mkdir -p ansible/.ssh
+
+                        cp "${HOSTS_FILE}" ansible/hosts.yaml
+                        cp "${VARS_FILE}" ansible/group_vars/all.yaml
+                        cp "${SSH_KEY_FILE}" ansible/.ssh/devops_hua
+                    '''
+                }
+            }
+        }
         
         stage('Test 3 VMs Connection') {
             when {
@@ -29,7 +47,7 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible -i ansible/hosts.yaml database-vm,backend-vm,frontend-vm -m ping
+                    ansible -i ansible/hosts.yaml database-vm,backend-vm,frontend-vm -m ping --private-key ansible/.ssh/devops_hua
                 '''
             }
         }
@@ -41,7 +59,7 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible-playbook -i ansible/hosts.yaml ansible/site.yaml
+                    ansible-playbook -i ansible/hosts.yaml ansible/site.yaml --private-key ansible/.ssh/devops_hua
                 '''
             }
         }
@@ -53,8 +71,8 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible -i ansible/hosts.yaml deployment-vm -m ping
-                '''
+                    ansible -i ansible/hosts.yaml deployment-vm -m ping --private-key ansible/.ssh/devops_hua
+                ''' 
             }
         }
 
@@ -65,9 +83,28 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible-playbook -i ansible/hosts.yaml ansible/docker.yaml
+                    ansible-playbook -i ansible/hosts.yaml ansible/docker.yaml --private-key ansible/.ssh/devops_hua
                 '''
             }
+        }
+    }
+
+    post {
+
+        success {
+            echo 'Deployment pipeline completed successfully.'
+        }
+
+        failure {
+            echo 'Deployment pipeline failed.'
+        }
+
+        always {
+            sh '''
+                rm -f ansible/hosts.yaml
+                rm -f ansible/group_vars/all.yaml
+                rm -f ansible/.ssh/devops_hua
+            '''
         }
     }
 }
