@@ -1,0 +1,9 @@
+---
+- name: Iclude setup tasks
+  import_tasks: setup.yaml
+
+- name: Iclude docker setup tasks
+  import_tasks: docker.yaml
+
+- name: Iclude jenkins setup tasks
+  import_tasks: jenkins.yaml

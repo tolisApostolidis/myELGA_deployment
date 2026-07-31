@@ -1,0 +1,60 @@
+- name: Update apt cache
+  apt:
+    update_cache: true
+
+- name: Install basic packages
+  apt:
+    name:
+      - ca-certificates
+      - curl
+    state: present
+
+- name: Install Java 21
+  apt:
+    name: openjdk-21-jdk
+    state: present
+
+- name: Install Maven
+  apt:
+    name: maven
+    state: present
+
+- name: Install Git 
+  apt:
+    name: git
+    state: present
+
+- name: Create apt keyrings directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+
+- name: Verify Java installation
+  command: 
+    cmd: java --version
+  register: java_version
+  changed_when: false
+
+- name: Verify Maven installation
+  command:
+    cmd: mvn --version
+  register: maven_version
+  changed_when: false
+
+- name: Verify Git installation
+  command: 
+    cmd:  git --version
+  register: git_version
+  changed_when: false
+
+- name: Display Java version 
+  debug: 
+    var: java_version.stdout_lines
+
+- name: Display Maven version
+  debug:
+    var: maven_version.stdout_lines
+
+- name: Display Git version 
+  debug: 
+    var: git_version.stdout

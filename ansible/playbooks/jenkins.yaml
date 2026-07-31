@@ -1,0 +1,7 @@
+---
+- name: Setup Jenkins Server 
+  hosts: jenkins-vm
+  become: true
+
+  roles:
+    - jenkins 
