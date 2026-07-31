@@ -101,7 +101,7 @@ pipeline {
 
         always {
             sh '''
-                rm -f ansible/hosts.yaml
+                rm -f ansible/inventory/hosts.yaml
                 rm -f ansible/inventory/group_vars/all.yaml
                 rm -f ansible/.ssh/devops_hua
             '''
