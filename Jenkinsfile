@@ -47,7 +47,7 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible -i ansible/hosts.yaml database-vm,backend-vm,frontend-vm -m ping --private-key ansible/.ssh/devops_hua
+                    ansible -i ansible/hosts.yaml database-vm,backend-vm,frontend-vm -m ping -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
                 '''
             }
         }
@@ -59,7 +59,7 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible-playbook -i ansible/hosts.yaml ansible/site.yaml --private-key ansible/.ssh/devops_hua
+                    ansible-playbook -i ansible/hosts.yaml ansible/site.yaml -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
                 '''
             }
         }
@@ -71,7 +71,7 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible -i ansible/hosts.yaml deployment-vm -m ping --private-key ansible/.ssh/devops_hua
+                    ansible -i ansible/hosts.yaml deployment-vm -m ping -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
                 ''' 
             }
         }
@@ -83,7 +83,7 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible-playbook -i ansible/hosts.yaml ansible/docker.yaml --private-key ansible/.ssh/devops_hua
+                    ansible-playbook -i ansible/hosts.yaml ansible/docker.yaml -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
                 '''
             }
         }
