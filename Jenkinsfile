@@ -33,7 +33,7 @@ pipeline {
                         mkdir -p ansible/.ssh
 
                         cp "${HOSTS_FILE}" ansible/hosts.yaml
-                        cp "${VARS_FILE}" ansible/group_vars/all.yaml
+                        cp "${VARS_FILE}" ansible/inventory/group_vars/all.yaml
                         cp "${SSH_KEY_FILE}" ansible/.ssh/devops_hua
                     '''
                 }
