@@ -32,7 +32,7 @@ pipeline {
                     sh '''
                         mkdir -p ansible/.ssh
 
-                        cp "${HOSTS_FILE}" ansible/hosts.yaml
+                        cp "${HOSTS_FILE}" ansible/inventory/hosts.yaml
                         cp "${VARS_FILE}" ansible/inventory/group_vars/all.yaml
                         cp "${SSH_KEY_FILE}" ansible/.ssh/devops_hua
                     '''
@@ -71,7 +71,7 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible -i ansible/inventory/osts.yaml deployment-vm -m ping -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
+                    ansible -i ansible/inventory/hosts.yaml deployment-vm -m ping -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
                 ''' 
             }
         }
