@@ -5,5 +5,8 @@ ansible/inventory/group_vars/all.yaml
 # Inventory file
 ansible/inventory/hosts.yaml
 
+# Kubernetes secret file
+kubernetes/secrets/secret.yaml
+
 # IDE
 .vscode/
