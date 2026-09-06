@@ -1,0 +1,7 @@
+---
+- name: Configure Kubernetes server and deploy myELGA
+  hosts: kubernetes-vm
+  become: true
+
+  roles: 
+    - kubernetes

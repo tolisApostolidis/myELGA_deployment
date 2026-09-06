@@ -1,0 +1,6 @@
+---
+- name: Install and configure MicroK8s
+  import_tasks: setup.yaml
+
+- name: Deploy myELGA to Kubernetes
+  import_tasks: deploy.yaml

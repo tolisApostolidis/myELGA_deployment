@@ -1,0 +1,95 @@
+---
+- name: Clone deployment repository
+  git:
+    repo: "{{ repo_url }}"
+    dest: "{{ repo_dest }}"
+    version: "{{ repo_version }}"
+    update: true
+
+- name: Apply namespace
+  command:
+    cmd: microk8s kubectl apply -f {{ repo_dest }}/kubernetes/namespace.yaml
+  register: namespace_result
+
+- name: Show namespace apply result
+  debug:
+    msg: "{{ namespace_result.stdout }}"
+
+- name: Generate temporary Kubernetes Secret file
+  template:
+    src: secret.yaml.j2
+    dest: /tmp/myelga-secret.yaml
+    mode: "0600"
+  no_log: true
+
+- name: Apply Kubernetes Secret
+  command:
+    cmd: microk8s kubectl apply -f /tmp/myelga-secret.yaml
+  register: secret_apply
+  no_log: true
+
+- name: Remove temporary Kubernetes Secret file
+  file:
+    path: /tmp/myelga-secret.yaml
+    state: absent
+  no_log: true
+
+- name: Apply database resources
+  command:
+    cmd: microk8s kubectl apply -f {{ repo_dest }}/kubernetes/database/
+  register: database_apply
+
+- name: Show database deployment result
+  debug:
+    msg: "{{ database_apply.stdout }}"
+
+- name: Wait for MySQL rollout
+  command:
+    cmd: microk8s kubectl rollout status deployment/mysql --namespace myelga
+  changed_when: false
+
+- name: Apply backend resources
+  command:
+    cmd: microk8s kubectl apply -f {{ repo_dest }}/kubernetes/backend/
+  register: backend_apply
+
+- name: Show backend deployment result
+  debug:
+    msg: "{{ backend_apply.stdout }}"
+
+- name: Wait for backend rollout
+  command:
+    cmd: microk8s kubectl rollout status deployment/backend --namespace myelga
+  changed_when: false
+
+- name: Apply frontend resources
+  command:
+    cmd: microk8s kubectl apply -f {{ repo_dest }}/kubernetes/frontend/
+  register: frontend_apply
+
+- name: Show frontend deployment result
+  debug:
+    msg: "{{ frontend_apply.stdout }}"
+
+- name: Wait for frontend rollout
+  command:
+    cmd: microk8s kubectl rollout status deployment/frontend --namespace myelga
+  changed_when: false
+
+- name: Apply ClusterIssuer
+  command:
+    cmd: microk8s kubectl apply -f {{ repo_dest }}/kubernetes/ingress/cluster-issuer.yaml
+  register: issuer_apply
+
+- name: Show ClusterIssuer apply result
+  debug:
+    msg: "{{ issuer_apply.stdout }}"
+
+- name: Apply Ingress
+  command:
+    cmd: microk8s kubectl apply -f {{ repo_dest }}/kubernetes/ingress/ingress.yaml
+  register: ingress_apply
+
+- name: Show Ingress apply result
+  debug:
+    msg: "{{ ingress_apply.stdout }}"

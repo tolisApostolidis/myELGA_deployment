@@ -1,0 +1,44 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: true
+
+- name: Install Git
+  apt:
+    name: git
+    state: present
+
+- name: Install snapd
+  apt:
+    name: snapd
+    state: present
+  
+- name: Ensure snapd is running
+  service:
+    name: snapd
+    state: started
+    enabled: true
+
+- name: Install MicroK8s
+  command:
+    cmd: snap install microk8s --classic --channel=1.35/stable
+
+- name: Add deployment user to MicroK8s group
+  user:
+    name: "{{ ansible_user }}"
+    groups: microk8s
+    append: true
+
+- name: Wait for MicroK8s
+  command:
+    cmd: microk8s status --wait-ready
+  changed_when: false
+
+- name: Enable MicroK8s addons
+  command:
+    cmd: "microk8s enable {{ item }}"
+  loop:
+    - dns
+    - hostpath-storage
+    - ingress
+    - cert-manager
