@@ -14,6 +14,12 @@ pipeline {
             defaultValue: true,
             description: 'Run docker.yaml to deploy the application with Docker Compose'
         )
+
+        string(
+            name: 'COMPONENT',
+            defaultValue: '',
+            description: 'Kubernetes deployment to restart'
+        )
     }
 
     environment {
@@ -84,6 +90,20 @@ pipeline {
             steps {
                 sh '''
                     ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/docker.yaml -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
+                '''
+            }
+        }
+
+        stage('Restart Kubernetes Deployment') {
+            when {
+                expression {
+                    params.COMPONENT?.trim()
+                }
+            }
+
+            steps {
+                sh '''
+                    ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/restart_kubernetes.yaml -e "deployment_name=${COMPONENT}"
                 '''
             }
         }
