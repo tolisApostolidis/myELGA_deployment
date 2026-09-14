@@ -66,6 +66,16 @@ spec:
                 secretKeyRef:
                   name: myelga-secrets
                   key: jwt-secret
+            - name: GCS_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: myelga-secrets
+                  key: gcs-bucket-name
+            - name: GCP_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: myelga-secrets
+                  key: gcp-project-id
             - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED
               value: "true"
           startupProbe:
