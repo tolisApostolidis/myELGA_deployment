@@ -41,6 +41,9 @@ services:
 
       JWT_SECRET: ${JWT_SECRET}
 
+      GCS_BUCKET_NAME: ${GCS_BUCKET_NAME}
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+
       CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN}
     networks:
       - myelga-network
