@@ -10,6 +10,9 @@ mail_password: "GMAIL_APP_PASSWORD"
 
 jwt_secret: "GENERATE_A_LONG_RANDOM_SECRET"
 
+GCS_BUCKET_NAME: "BUCKET_NAME" 
+GCP_PROJECT_ID: "PROJECT_ID"
+
 frontend_ip: "FRONTEND_VM_IP"
 
 backend_private_host: "BACKEND_INTERNAL_IP"
