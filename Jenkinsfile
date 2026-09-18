@@ -11,8 +11,14 @@ pipeline {
 
         booleanParam(
             name: 'DEPLOY_DOCKER',
-            defaultValue: true,
+            defaultValue: false,
             description: 'Run docker.yaml to deploy the application with Docker Compose'
+        )
+
+        booleanParam(
+            name: 'DEPLOY_KUBERNETES',
+            defaultValue: true,
+            description: 'Run kubernetes.yaml to deploy the application with Kubenretes'
         )
 
         string(
@@ -94,6 +100,18 @@ pipeline {
             }
         }
 
+        stage('Deploy Kubernetes') {
+            when {
+                expression { params.DEPLOY_KUBERNETES }
+            }
+
+            steps {
+                sh '''
+                    ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/kubernetes.yaml -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
+                '''
+            }
+        }
+
         stage('Restart Kubernetes Deployment') {
             when {
                 expression {
@@ -104,14 +122,6 @@ pipeline {
             steps {
                 sh '''
                     ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/restart_kubernetes.yaml -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua" -e "deployment_name=${COMPONENT}"
-                '''
-            }
-        }
-
-        stage('Deploy Kubernetes') {
-            steps {
-                sh '''
-                    ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/kubernetes.yaml -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
                 '''
             }
         }
