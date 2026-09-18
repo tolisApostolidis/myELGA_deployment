@@ -103,9 +103,15 @@ pipeline {
 
             steps {
                 sh '''
-                    ansible-inventory -i ansible/inventory/hosts.yaml --graph
-                    
                     ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/restart_kubernetes.yaml -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua" -e "deployment_name=${COMPONENT}"
+                '''
+            }
+        }
+
+        stage('Deploy Kubernetes') {
+            steps {
+                sh '''
+                    ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/kubernetes.yaml
                 '''
             }
         }
