@@ -111,7 +111,7 @@ pipeline {
         stage('Deploy Kubernetes') {
             steps {
                 sh '''
-                    ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/kubernetes.yaml
+                    ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbooks/kubernetes.yaml -e "ansible_ssh_private_key_file=${WORKSPACE}/ansible/.ssh/devops_hua"
                 '''
             }
         }
